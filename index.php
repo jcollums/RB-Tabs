@@ -167,10 +167,15 @@ body {
 </table>
 
 <p><input type="submit" value="Convert">
+
+
+<label><input type="checkbox" name="mode" value="1"<?=(isset($_POST['mode']))?" CHECKED": ""?>> Scrolling Mode</label>
+
 <label><input type="checkbox" name="breakneck" value="1"<?=($_POST['breakneck'])?" CHECKED": ""?>> Breakneck Speed</label>
 
 
 <input type="text" name="bpm" id="bpm" value="<?=$_POST['bpm']?$_POST['bpm']:160?>" size="3"> BPM
+
 <p>
 
 
@@ -184,180 +189,184 @@ body {
 <hr>
 
 <?
-/*
-foreach ($sets as $lines) {
-    $beat = array();
-    $mcount = 0;
+if (!isset($_POST['mode'])) {
+    foreach ($sets as $lines) {
+        $beat = array();
+        $mcount = 0;
 
-    foreach ($lines as $line) {
-        $measures = explode("|", $line);
-        if (count($measures) > $mcount)
-            $mcount = count($measures);
-        
-        if ($mcount and count($measures) < $mcount)
-            continue;
-        $drum = $measures[0];
-        
-        for ($i = 1; $i < count($measures); ++$i) {
-            $measure = $measures[$i];
+        foreach ($lines as $line) {
+            $measures = explode("|", $line);
+            if (count($measures) > $mcount)
+                $mcount = count($measures);
             
-            if (trim($drum) and strlen($measure) > $mlen)
-                $mlen = strlen($measure);
+            if ($mcount and count($measures) < $mcount)
+                continue;
+            $drum = $measures[0];
+            
+            for ($i = 1; $i < count($measures); ++$i) {
+                $measure = $measures[$i];
                 
-            for ($x = 0; $x < strlen($measure); ++$x) {
-                $note = $measure[$x];
-                
-                if ($note != "-") {
-                    $color = $map[trim($drum)];
+                if (trim($drum) and strlen($measure) > $mlen)
+                    $mlen = strlen($measure);
                     
-                    if (!strstr($beat[$i][$x], $color))
-                        $beat[$i][$x] .= $color;
+                for ($x = 0; $x < strlen($measure); ++$x) {
+                    $note = $measure[$x];
+                    
+                    if ($note != "-") {
+                        $color = $map[trim($drum)];
+                        
+                        if (!strstr($beat[$i][$x], $color))
+                            $beat[$i][$x] .= $color;
+                    }
                 }
+            
             }
-        
+                
         }
-            
-    }
-    ?>
-
-    <p>
-    <table>
-    <tr>
-    <?
-    $blank = 0;
-    for ($i = 1; $i < $mcount; ++$i) {
         ?>
-        <td>
+
+        <p>
+        <table>
+        <tr>
         <?
-        for ($x = 0; $x < $mlen; ++$x) {
-            for ($z = 0; $z < $blank; ++$z) {
-                echo "\t\t<img src='img/blank.gif'>\n"; 
-                $blank = 0;
-            }
-            
-            $image = "";
-            $combo = $beat[$i][$x];
-    
-            foreach ($imgs as $img) {
-                if (is_anagram($img, $combo)) {
-                    $image = $img;
-                }
-            
-            }
-            
-            if (!$image) {
-                ++$blank;                
-            }
-            else {
+        $blank = 0;
+        for ($i = 1; $i < $mcount; ++$i) {
+            ?>
+            <td>
+            <?
+            for ($x = 0; $x < $mlen; ++$x) {
                 for ($z = 0; $z < $blank; ++$z) {
-                    echo "\t\t<img src='img/blank.gif'>\n"; 
+                    echo "\t\t<img src='img-h/blank.gif'>\n"; 
                     $blank = 0;
                 }
                 
-                echo "\t\t<img src='img/$image.gif'>\n";
-                if ($_POST['breakneck'])
-                    echo "\t\t<img src='img/blank.gif'>\n";
-           }
-           
+                $image = "";
+                $combo = $beat[$i][$x];
+        
+                foreach ($imgs as $img) {
+                    if (is_anagram($img, $combo)) {
+                        $image = $img;
+                    }
+                
+                }
+                
+                if (!$image) {
+                    ++$blank;                
+                }
+                else {
+                    for ($z = 0; $z < $blank; ++$z) {
+                        echo "\t\t<img src='img-h/blank.gif'>\n"; 
+                        $blank = 0;
+                    }
+                    
+                    echo "\t\t<img src='img-h/$image.gif'>\n";
+                    if ($_POST['breakneck'])
+                        echo "\t\t<img src='img-h/blank.gif'>\n";
+            }
+            
+            }
+        
+            ?>
+            </td>
+            <?
         }
-    
         ?>
-        </td>
+        </tr>
+        </table>
+        </p>
         <?
     }
+}
+else {
     ?>
-    </tr>
-    </table>
+    <div class="fade"></div>
+
+    <section class="star-wars">
+    <div class="crawl" id="crawl">
+        
+        <p>
+
+    <?
+    for ($y = count($sets); $y > -1; $y--) {
+        $lines = $sets[$y];
+        $beat = array();
+        $mcount = 0;
+
+        if (!is_array($lines)) continue;
+
+        foreach ($lines as $line) {
+            $measures = explode("|", $line);
+            if (count($measures) > $mcount)
+                $mcount = count($measures);
+            
+            if ($mcount and count($measures) < $mcount)
+                continue;
+            $drum = $measures[0];
+            
+            for ($i = 1; $i < count($measures); ++$i) {
+                $measure = $measures[$i];
+                
+                if (trim($drum) and strlen($measure) > $mlen) {
+                    $mlen = strlen($measure);
+                    $beats += $mlen;
+                }
+                    
+                for ($x = 0; $x < strlen($measure); ++$x) {
+                    $note = $measure[$x];
+                    
+                    if ($note != "-") {
+                        $color = $map[trim($drum)];
+                        
+                        if (!strstr($beat[$i][$x], $color))
+                            $beat[$i][$x] .= $color;
+                    }
+                }
+            
+            }    
+        }
+
+        $blank = 0;
+        for ($i = $mcount-1; $i >= 1; --$i) {
+            for ($x = $mlen-1; $x >= 0; --$x) {
+                
+                $image = "";
+                $combo = $beat[$i][$x];
+        
+                foreach ($imgs as $img) {
+                    if (is_anagram($img, $combo)) {
+                        $image = $img;
+                    }
+                }
+                
+                if (!$image) {
+                    ++$blank;                
+                }
+                else {
+                    for ($z = 0; $z < $blank; ++$z) {
+                        echo "\t\t<img src='img-v/blank.gif' height='34' width='160'><br />\n"; 
+                        $blank = 0;
+                    }
+                    
+                    echo "\t\t<img src='img-v/$image.gif' height='34' width='160'><br />\n";
+                    if ($_POST['breakneck'])
+                        echo "\t\t<img src='img-v/blank.gif' height='34' width='160'><br />\n";
+            }
+            
+            }
+        }
+    }
+    ?>
     </p>
-    <?
-}
-*/
-?>
+    </div>
+    </section>
 
-<div class="fade"></div>
-
-<section class="star-wars">
-  <div class="crawl" id="crawl">
-    
-    <p>
-
+    <script>
+    var bpm = parseInt(document.getElementById('bpm').value);
+    var s = <?=$beats?> / bpm * 60;
+    document.getElementById('crawl').style.animation = "crawl " + s + "s linear reverse infinite";
+    </script>
 <?
-for ($y = count($sets); $y > -1; $y--) {
-	$lines = $sets[$y];
-    $beat = array();
-    $mcount = 0;
-
-    foreach ($lines as $line) {
-        $measures = explode("|", $line);
-        if (count($measures) > $mcount)
-            $mcount = count($measures);
-        
-        if ($mcount and count($measures) < $mcount)
-            continue;
-        $drum = $measures[0];
-        
-        for ($i = 1; $i < count($measures); ++$i) {
-            $measure = $measures[$i];
-            
-            if (trim($drum) and strlen($measure) > $mlen) {
-                $mlen = strlen($measure);
-				$beats += $mlen;
-			}
-                
-            for ($x = 0; $x < strlen($measure); ++$x) {
-                $note = $measure[$x];
-                
-                if ($note != "-") {
-                    $color = $map[trim($drum)];
-                    
-                    if (!strstr($beat[$i][$x], $color))
-                        $beat[$i][$x] .= $color;
-                }
-            }
-        
-        }    
-    }
-
-    $blank = 0;
-    for ($i = $mcount-1; $i >= 1; --$i) {
-        for ($x = $mlen-1; $x >= 0; --$x) {
-            
-            $image = "";
-            $combo = $beat[$i][$x];
-    
-            foreach ($imgs as $img) {
-                if (is_anagram($img, $combo)) {
-                    $image = $img;
-                }
-            }
-            
-            if (!$image) {
-                ++$blank;                
-            }
-            else {
-                for ($z = 0; $z < $blank; ++$z) {
-                    echo "\t\t<img src='img-v/blank.gif' height='34' width='160'><br />\n"; 
-                    $blank = 0;
-                }
-                
-                echo "\t\t<img src='img-v/$image.gif' height='34' width='160'><br />\n";
-                if ($_POST['breakneck'])
-                    echo "\t\t<img src='img-v/blank.gif' height='34' width='160'><br />\n";
-           }
-           
-        }
-    }
 }
 ?>
-</p>
-  </div>
-</section>
-
-<script>
-var bpm = parseInt(document.getElementById('bpm').value);
-var s = <?=$beats?> / bpm * 60;
-document.getElementById('crawl').style.animation = "crawl " + s + "s linear reverse infinite";
-</script>
-
 </body>
 </html>
